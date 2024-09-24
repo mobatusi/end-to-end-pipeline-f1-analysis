@@ -54,22 +54,36 @@ The pipeline is designed to answer the following analytical questions:
      - Go to **IAM & Admin** > **IAM**.
      - Click **Add**.
      - Paste the email address of the service account.
-     - Select the appropriate roles (e.g., **BigQuery Admin**, **Cloud Storage Admin**, **Cloud Composer Service Agent**).
-     - Click **Save**
+     - Select the following roles:
+       - **BigQuery Admin**
+       - **Cloud Composer API Service Agent**
+       - **Cloud Composer v2 API Service Agent Extension**
+       - **Storage Object Admin**
+     - Click **Save**.
 
-3. **Create BigQuery Dataset**:
+3. **Grant Cloud Composer Service Agent Permissions**:
+   - Grant the **Cloud Composer v2 API Service Agent Extension** role to the Cloud Composer Service Agent account:
+     - Use the `gcloud` CLI:
+       ```sh
+       gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+       --member serviceAccount:service-PROJECT_NUMBER@cloudcomposer-accounts.iam.gserviceaccount.com \
+       --role roles/composer.ServiceAgentV2Ext
+       ```
+     - Replace `YOUR_PROJECT_ID` and `PROJECT_NUMBER` with your project ID and number.
+
+4. **Create BigQuery Dataset**:
    - Go to the BigQuery console.
    - Click the “⋮” icon next to the project name.
    - Click “Create dataset” and provide dataset ID “f1_analysis.”
    - Click the “Create dataset” button.
 
-4. **Review Directory Structure**:
+5. **Review Directory Structure**:
    - The repository includes the following directories:
      - `dags`: Contains the Airflow DAGs.
      - `sql`: Contains the necessary SQL files for the DAGs.
      - `data`: Contains the required input data in CSV format.
 
-5. **Setup Cloud Composer**:
+6. **Setup Cloud Composer**:
    - Create a Cloud Composer environment:
      - Go to the Google Cloud Console.
      - Navigate to **Cloud Composer** > **Environments**.
