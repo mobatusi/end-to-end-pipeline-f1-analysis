@@ -37,13 +37,66 @@ The pipeline is designed to answer the following analytical questions:
 * **Data Transformation**: Transforms data using SQL to answer analytical questions
 * **Data Scheduling**: Schedules data pipeline using Apache Airflow
 
+### Setup Instructions
+
+1. **Generate GCP Credentials**:
+   - Follow the steps to create a service account:
+     - Log in to the Google Cloud Console.
+     - Go to **IAM & Admin** > **Service accounts** > **+ Create Service Account**[1][4].
+     - Enter a service account name, ID, and description.
+     - Click **Create** and then **Done**.
+     - Create a new key for the service account:
+       - Go to **IAM & Admin** > **Service accounts** > **Manage keys**.
+       - Click **Add Key** > **Create new key**.
+       - Select **JSON** as the key type and click **Create**.
+       - Save the downloaded JSON key file securely.
+
+2. **Assign Roles to the Service Account**:
+   - Grant the necessary roles to the service account:
+     - Go to **IAM & Admin** > **IAM**.
+     - Click **Add**.
+     - Paste the email address of the service account.
+     - Select the appropriate roles (e.g., **BigQuery Admin**, **Cloud Storage Admin**, **Cloud Composer Service Agent**).
+     - Click **Save**
+
+3. **Create BigQuery Dataset**:
+   - Go to the BigQuery console.
+   - Click the “⋮” icon next to the project name.
+   - Click “Create dataset” and provide dataset ID “f1_analysis.”
+   - Click the “Create dataset” button.
+
+4. **Review Directory Structure**:
+   - The repository includes the following directories:
+     - `dags`: Contains the Airflow DAGs.
+     - `sql`: Contains the necessary SQL files for the DAGs.
+     - `data`: Contains the required input data in CSV format.
+
+5. **Setup Cloud Composer**:
+   - Create a Cloud Composer environment:
+     - Go to the Google Cloud Console.
+     - Navigate to **Cloud Composer** > **Environments**.
+     - Click **Create**.
+     - Follow the instructions to create a new environment.
+   - Configure the service account in Cloud Composer:
+     - Go to **Cloud Composer** > **Environments** > **Your Environment**.
+     - Click **Edit**.
+     - Under **Service account**, select the service account created earlier.
+     - Click **Save**.
+
 ### Getting Started
 
 1. Clone the repository: `git clone https://github.com/mobatusi/formula-1-analysis-data-pipeline.git`
 2. Install required dependencies: `pip install -r requirements.txt`
-3. Set up BigQuery credentials: [follow instructions](https://cloud.google.com/bigquery/docs/quickstarts/quickstart-client-libraries)
+3. Set up BigQuery credentials as described above.
 4. Set up Apache Airflow: [follow instructions](https://airflow.apache.org/docs/apache-airflow/stable/installation.html)
 5. Run the pipeline: `airflow db init` and `airflow scheduler`
+
+### Getting Started
+
+1. Clone the repository.
+2. Set up BigQuery credentials as described above.
+3. Set up Cloud Composer.
+4. Run the pipeline using Cloud Composer.
 
 ### License
 
