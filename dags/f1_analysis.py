@@ -54,15 +54,4 @@ def f1_analysis_pipeline():
     # Run the BigQuery job
     @task
     def run_f1_analysis(sql_content):
-        from google.cloud import bigquery
-        client = bigquery.Client()
-        job = client.query(sql_content)
-        job.result()  # Wait for the job to complete
-    
-    sql_content = read_sql_from_gcs()
-    run_analysis = run_f1_analysis(sql_content)
-
-    # Set task dependencies
-    ingestion_tasks >> sql_content >> run_analysis
-
-f1_analysis_pipeline()
+      

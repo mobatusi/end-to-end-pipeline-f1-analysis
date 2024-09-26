@@ -1,10 +1,12 @@
 -- f1_analysis.sql: Transformation logic
+DROP TABLE IF EXISTS f1_analysis.f1_result;
+
 CREATE TABLE IF NOT EXISTS f1_analysis.f1_result (
     result_id INTEGER,
     race_id INTEGER,
     race_name STRING,
     race_year INTEGER,
-    race_date STRING,
+    race_date DATE,
     driver_id INTEGER,
     driver_forename STRING,
     driver_surname STRING,
