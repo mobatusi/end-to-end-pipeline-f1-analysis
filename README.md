@@ -59,6 +59,7 @@ The pipeline is designed to answer the following analytical questions:
        - **Cloud Composer API Service Agent**
        - **Cloud Composer v2 API Service Agent Extension**
        - **Storage Object Admin**
+       - **Composer Worker**
      - Click **Save**.
 
 3. **Grant Cloud Composer Service Agent Permissions**:
