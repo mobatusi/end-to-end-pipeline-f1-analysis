@@ -10,7 +10,7 @@ from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobO
 from airflow.models.baseoperator import chain
 
 # Replace module-level code with Airflow Variables
-mybucket = os.environ['GCS_BUCKET']
+GCS_BUCKET = os.environ['GCS_BUCKET']
 DATASET_ID = os.environ['dataset_id']
 PROJECT_ID = os.environ['GCP_PROJECT']
 
@@ -29,7 +29,7 @@ def f1_analysis_pipeline():
     for file in csv_files:
         ingest_task = GCSToBigQueryOperator(
             task_id=f'ingest_{file}',
-            bucket=mybucket,
+            bucket=GCS_BUCKET,
             source_objects=[f'data/{file}'],
             destination_project_dataset_table=f'{PROJECT_ID}.{DATASET_ID}.{file.split(".")[0]}',
             source_format='CSV',
@@ -46,27 +46,23 @@ def f1_analysis_pipeline():
     def read_sql_from_gcs():
         from google.cloud import storage
         client = storage.Client()
-        bucket = client.bucket(mybucket)
+        bucket = client.bucket(GCS_BUCKET)
         blob = bucket.blob('sql/f1_analysis.sql')
         sql_content = blob.download_as_text()
         return sql_content
 
+    # Run the BigQuery job
+    @task
+    def run_f1_analysis(sql_content):
+        from google.cloud import bigquery
+        client = bigquery.Client()
+        job = client.query(sql_content)
+        job.result()  # Wait for the job to complete
+    
     sql_content = read_sql_from_gcs()
+    run_analysis = run_f1_analysis(sql_content)
 
-    get_final_f1_analysis = BigQueryInsertJobOperator(
-        task_id="get_final_f1_analysis",
-        project_id=PROJECT_ID,
-        configuration={
-            "query": {
-                "query": "{{ sql_content }}",
-                "useLegacySql": False,
-            }
-        },
-        params={
-            'project_id': PROJECT_ID,
-            'dataset_id': DATASET_ID,
-        },
-    )
-    ingestion_tasks >> sql_content >> get_final_f1_analysis
+    # Set task dependencies
+    ingestion_tasks >> sql_content >> run_analysis
 
 f1_analysis_pipeline()
